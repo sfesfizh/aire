@@ -41,7 +41,8 @@ flux-bootstrap:
 		--repository=$(GITHUB_REPO) \
 		--branch=$(BRANCH) \
 		--path=$(FLUX_PATH) \
-		--personal
+		--personal \
+		--token-auth
 	@echo "==> Flux bootstrap complete."
 
 # --- Status ------------------------------------------------------------------
