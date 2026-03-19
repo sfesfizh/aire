@@ -1,0 +1,36 @@
+# Reference ConfigMap: standalone-style config.yaml per
+# https://agentgateway.dev/docs/standalone/latest/tutorials/llm-gateway/
+#
+# This ConfigMap is provided for reference / alternative standalone deployment.
+# In the Kubernetes Helm deployment, agentgateway uses CRDs (AgentgatewayBackend,
+# HTTPRoute, Gateway) instead of this config file.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agentgateway-config
+  namespace: agentgateway-system
+data:
+  config.yaml: |
+    # yaml-language-server: $schema=https://agentgateway.dev/schema/config
+    llm:
+      models:
+        - name: gemini-2.5-flash
+          provider: gemini
+          params:
+            model: gemini-2.5-flash
+            apiKey: "$GEMINI_API_KEY"
+
+    # --- Multi-listener reference (kagent integration) ---
+    # listeners:
+    #   - name: llm
+    #     address: 0.0.0.0
+    #     port: 8080
+    #     protocol: HTTP
+    #   - name: mcp
+    #     address: 0.0.0.0
+    #     port: 8081
+    #     protocol: MCP
+    #   - name: a2a
+    #     address: 0.0.0.0
+    #     port: 8082
+    #     protocol: A2A

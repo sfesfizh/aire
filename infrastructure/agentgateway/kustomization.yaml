@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - crds-release.yaml
+  - release.yaml
+  - gateway.yaml
+  - gemini-secret.yaml
+  - gemini-backend.yaml
+  - gemini-route.yaml
+  - configmap.yaml

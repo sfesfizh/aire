@@ -1,0 +1,14 @@
+# ModelConfig routes kagent requests through agentgateway instead of
+# calling the Gemini API directly. The baseUrl points to the agentgateway
+# proxy service inside the cluster.
+apiVersion: kagent.dev/v1alpha2
+kind: ModelConfig
+metadata:
+  name: gemini-via-gateway
+  namespace: kagent
+spec:
+  provider: Gemini
+  model: gemini-2.5-flash
+  apiKeySecret: kagent-gemini
+  apiKeySecretKey: GOOGLE_API_KEY
+  baseUrl: http://agentgateway-proxy.agentgateway-system.svc:8080/v1

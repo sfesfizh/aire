@@ -1,0 +1,5 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Gateway API CRDs are applied as a cluster prerequisite via `make gateway-api-crds`.
+# This directory is kept as a reference; no resources are reconciled here.
+resources: []

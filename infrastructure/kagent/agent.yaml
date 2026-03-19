@@ -1,0 +1,14 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: assistant
+  namespace: kagent
+spec:
+  description: General-purpose assistant routed through agentgateway
+  type: Declarative
+  declarative:
+    modelConfig: gemini-via-gateway
+    systemMessage: |
+      You are a helpful Kubernetes-native AI assistant running in the aire
+      platform. You have access to tools via MCP and can assist with
+      infrastructure, code, and operational tasks.
