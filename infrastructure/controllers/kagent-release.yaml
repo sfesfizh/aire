@@ -21,9 +21,5 @@ spec:
     remediation:
       retries: 3
   values:
-    providers:
-      default: Gemini
-      gemini:
-        apiKey: ""
     kmcp:
       enabled: true
