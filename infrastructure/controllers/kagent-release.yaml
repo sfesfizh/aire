@@ -21,5 +21,23 @@ spec:
     remediation:
       retries: 3
   values:
+    agents:
+      cilium-policy-agent:
+        enabled: false
+      cilium-manager-agent:
+        enabled: false
+      cilium-debug-agent:
+        enabled: false
+      istio-agent:
+        enabled: false
+      istio-policy-agent:
+        enabled: false
+      istio-manager-agent:
+        enabled: false
+    providers:
+      default: gemini
+      gemini:
+        provider: Gemini
+        model: "gemini-2.5-flash"
     kmcp:
       enabled: true
