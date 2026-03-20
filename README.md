@@ -65,21 +65,28 @@ Flux reconciles the repository and deploys:
 ## Repository Layout
 
 ```
-clusters/local/          Flux entry point (Kustomizations)
+clusters/local/
+  infra-sources.yaml       Flux Kustomization -> infrastructure/sources/
+  infra-controllers.yaml   Flux Kustomization -> infrastructure/controllers/ (depends on sources)
+  infra-config.yaml        Flux Kustomization -> infrastructure/config/ (depends on controllers)
+  apps.yaml                Flux Kustomization -> apps/ (depends on config)
 infrastructure/
-  sources/               HelmRepository definitions (OCI)
-  gateway-api/           Gateway API CRDs
-  agentgateway/          AgentGateway Helm releases + Gemini config
-  kagent/                Kagent Helm releases + ModelConfig + Agent
-apps/                    Application workloads (placeholder)
-scripts/                 Helper scripts (kind config, secret creation)
+  sources/                 HelmRepository definitions (OCI)
+  controllers/             Namespaces + HelmReleases (agentgateway, kagent)
+  config/                  CRD-based resources (Gateway, Backend, Route, ModelConfig, Agent)
+apps/                      Application workloads (placeholder)
+scripts/                   Helper scripts (kind config, secret creation)
 ```
+
+Flux reconciles layers in order: **sources -> controllers -> config -> apps**.
+This ensures CRDs from HelmReleases are installed before custom resources
+(like `AgentgatewayBackend`) are applied.
 
 ## Secrets
 
 API keys are **never** committed to Git. The placeholder Secret manifests in
-`infrastructure/agentgateway/` and `infrastructure/kagent/` contain `REPLACE_ME`
-values. Use `make secrets` (or `scripts/create-secrets.sh`) to create real
+`infrastructure/config/` contain `REPLACE_ME` values.
+Use `make secrets` (or `scripts/create-secrets.sh`) to create real
 secrets from the `GEMINI_API_KEY` environment variable.
 
 For production, consider [Mozilla SOPS](https://fluxcd.io/flux/guides/mozilla-sops/)
