@@ -41,3 +41,9 @@ spec:
         model: "gemini-2.5-flash"
     kmcp:
       enabled: true
+    ui:
+      service:
+        type: LoadBalancer
+        ports:
+          port: 8080
+          targetPort: 8080
