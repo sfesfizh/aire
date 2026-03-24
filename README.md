@@ -9,6 +9,7 @@ with Google Gemini as the LLM provider, managed by **Flux CD**.
 |------|---------|
 | Docker | <https://docs.docker.com/get-docker/> |
 | kind | `brew install kind` |
+| cloud-provider-kind | Runs as a Docker container (no install needed) |
 | kubectl | `brew install kubectl` |
 | flux | `brew install fluxcd/tap/flux` |
 | GitHub PAT | `export GITHUB_TOKEN=<token>` (repo scope) |
@@ -35,6 +36,9 @@ make cluster-create
 
 # Install Gateway API CRDs (cluster prerequisite)
 make gateway-api-crds
+
+# Start cloud-provider-kind for LoadBalancer support (runs in background, needs sudo)
+make cloud-provider
 
 # Create secrets (requires GEMINI_API_KEY env var)
 make secrets
