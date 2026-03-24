@@ -4,9 +4,16 @@ GITHUB_REPO    := aire
 BRANCH         := main
 FLUX_PATH      := clusters/local
 
-.PHONY: all cluster-create cluster-delete gateway-api-crds cloud-provider flux-bootstrap secrets status clean
+.PHONY: all cluster-create cluster-delete cloud-provider flux-bootstrap secrets status clean check-env
 
-all: cluster-create gateway-api-crds cloud-provider secrets flux-bootstrap
+all: cluster-create cloud-provider secrets flux-bootstrap
+
+# --- Environment checks ------------------------------------------------------
+
+check-env:
+ifndef GEMINI_API_KEY
+	$(error GEMINI_API_KEY is not set. Export it first: export GEMINI_API_KEY=<your-key>)
+endif
 
 # --- Kind cluster -----------------------------------------------------------
 
@@ -23,29 +30,30 @@ cluster-delete:
 # --- Cloud Provider Kind (LoadBalancer support) ------------------------------
 
 cloud-provider:
-	@echo "==> Starting cloud-provider-kind as a container..."
-	@if docker ps --format '{{.Names}}' | grep -q '^cloud-provider-kind$$'; then \
-		echo "    cloud-provider-kind container is already running."; \
+	@echo "==> Setting up cloud-provider-kind..."
+	@if ! command -v cloud-provider-kind > /dev/null 2>&1; then \
+		echo "    Installing cloud-provider-kind via go install..."; \
+		go install sigs.k8s.io/cloud-provider-kind@latest; \
+	fi
+	@if pgrep -x cloud-provider-kind > /dev/null 2>&1; then \
+		echo "    cloud-provider-kind is already running."; \
 	else \
-		docker run -d --rm \
-			--name cloud-provider-kind \
-			--network kind \
-			-v /var/run/docker.sock:/var/run/docker.sock \
-			registry.k8s.io/cloud-provider-kind/cloud-controller-manager:v0.6.0 ; \
-		echo "    Container started. Logs: docker logs -f cloud-provider-kind"; \
+		nohup cloud-provider-kind > /tmp/cloud-provider-kind.log 2>&1 & \
+		sleep 2; \
+		echo "    Started.  Logs: /tmp/cloud-provider-kind.log"; \
 	fi
 
 # --- Gateway API CRDs --------------------------------------------------------
 
-gateway-api-crds:
-	@echo "==> Installing Gateway API v1.5.0 CRDs..."
-	kubectl apply --server-side -f \
-		https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/standard-install.yaml
-	@echo "==> Gateway API CRDs installed."
+# gateway-api-crds:
+# 	@echo "==> Installing Gateway API v1.5.0 CRDs..."
+# 	kubectl apply --server-side -f \
+# 		https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/standard-install.yaml
+# 	@echo "==> Gateway API CRDs installed."
 
 # --- Secrets -----------------------------------------------------------------
 
-secrets:
+secrets: check-env
 	@echo "==> Creating Kubernetes secrets..."
 	bash scripts/create-secrets.sh
 

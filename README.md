@@ -5,14 +5,16 @@ with Google Gemini as the LLM provider, managed by **Flux CD**.
 
 ## Prerequisites
 
-| Tool | Install |
-|------|---------|
-| Docker | <https://docs.docker.com/get-docker/> |
-| kind | `brew install kind` |
-| cloud-provider-kind | Runs as a Docker container (no install needed) |
-| kubectl | `brew install kubectl` |
-| flux | `brew install fluxcd/tap/flux` |
-| GitHub PAT | `export GITHUB_TOKEN=<token>` (repo scope) |
+| Tool | macOS | Ubuntu |
+|------|-------|--------|
+| Docker | <https://docs.docker.com/get-docker/> | `sudo apt-get install docker.io` |
+| kind | `brew install kind` | `go install sigs.k8s.io/kind@latest` |
+| kubectl | `brew install kubectl` | [install guide](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) |
+| flux | `brew install fluxcd/tap/flux` | `curl -s https://fluxcd.io/install.sh \| bash` |
+| Go (1.22+) | `brew install go` | `sudo snap install go --classic` |
+| GitHub PAT | `export GITHUB_TOKEN=<token>` (repo scope) | same |
+
+`cloud-provider-kind` is auto-installed by `make cloud-provider` via `go install` if not already present.
 
 ## Quick Start
 
@@ -37,7 +39,7 @@ make cluster-create
 # Install Gateway API CRDs (cluster prerequisite)
 make gateway-api-crds
 
-# Start cloud-provider-kind for LoadBalancer support (runs in background, needs sudo)
+# Start cloud-provider-kind for LoadBalancer support (auto-installs if missing)
 make cloud-provider
 
 # Create secrets (requires GEMINI_API_KEY env var)
