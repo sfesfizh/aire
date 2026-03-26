@@ -6,7 +6,7 @@ FLUX_PATH      := clusters/local
 
 .PHONY: all cluster-create cluster-delete cloud-provider flux-bootstrap secrets status clean check-env
 
-all: cluster-create cloud-provider secrets flux-bootstrap
+all: check-env cluster-create cloud-provider secrets flux-bootstrap
 
 # --- Environment checks ------------------------------------------------------
 
